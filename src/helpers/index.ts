@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
-const FIGMA_TOKEN = "figd_JeH2UPU_bg5wNnGjap_L7-mKl0OK5ncF89wnn-6u";
-const FIGMA_FILE = "EORq81rMJItb19P45kHfFa";
+const FIGMA_TOKEN = process.env.FIGMA_TOKEN;
+const FIGMA_FILE = process.env.FIGMA_FILE;
 
 export function camelCaseToDash(string: string) {
     return string.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();

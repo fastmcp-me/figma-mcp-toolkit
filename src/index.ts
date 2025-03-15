@@ -16,8 +16,8 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Get environment variables
-const FIGMA_TOKEN = "figd_JeH2UPU_bg5wNnGjap_L7-mKl0OK5ncF89wnn-6u";
-const FIGMA_FILE = "EORq81rMJItb19P45kHfFa";
+const FIGMA_TOKEN = process.env.FIGMA_TOKEN;
+const FIGMA_FILE = process.env.FIGMA_FILE;
 
 if (!FIGMA_TOKEN || !FIGMA_FILE) {
   console.error("Missing required environment variables FIGMA_TOKEN or FIGMA_FILE");
