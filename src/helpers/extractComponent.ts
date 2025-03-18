@@ -4,8 +4,10 @@ import path, { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const tempDir = join(__dirname, '../build/temp')
+// const tempDir = join(__dirname, '../build/temp')
 
+const PROJECT_DIR = process.env.PROJECT_DIR || '/'
+const tempDir = join(PROJECT_DIR, 'temp')
 interface ComponentChild {
   name: string
   type: string

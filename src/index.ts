@@ -12,21 +12,6 @@ import { exec } from 'node:child_process'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Get environment variables
-const FIGMA_TOKEN = process.env.FIGMA_TOKEN
-const FIGMA_FILE = process.env.FIGMA_FILE
-
-if (!FIGMA_TOKEN || !FIGMA_FILE) {
-  console.error(
-    'Missing required environment variables FIGMA_TOKEN or FIGMA_FILE'
-  )
-  process.exit(1)
-}
-
-const SVG_OUTPUT_FOLDER = 'assets/svg/'
-const RATE_LIMIT = 20
-const WAIT_TIME_IN_SECONDS = 45
-
 const logger = {
   info: (message: string, meta?: Record<string, any>) => {
     console.error(`[INFO] ${message}`, meta ? JSON.stringify(meta) : '')
@@ -41,6 +26,20 @@ const logger = {
     console.error(`[WARN] ${message}`, meta ? JSON.stringify(meta) : '')
   },
 }
+// Get environment variables
+const FIGMA_TOKEN = process.env.FIGMA_TOKEN
+const FIGMA_FILE = process.env.FIGMA_FILE
+
+if (!FIGMA_TOKEN || !FIGMA_FILE) {
+  console.error(
+    'Missing required environment variables FIGMA_TOKEN or FIGMA_FILE'
+  )
+  process.exit(1)
+}
+
+const SVG_OUTPUT_FOLDER = 'assets/svg/'
+const RATE_LIMIT = 20
+const WAIT_TIME_IN_SECONDS = 45
 
 // Create MCP server with explicit capabilities
 const server = new McpServer(
