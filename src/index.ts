@@ -7,6 +7,7 @@ import fsPromises from 'fs/promises'
 import { fileURLToPath } from 'url'
 import { generateComponent } from './helpers/extractComponent.js'
 import { exec } from 'node:child_process'
+import { fetchFigmaData } from './helpers/index.js'
 
 // Load environment variables
 
@@ -29,10 +30,11 @@ const logger = {
 // Get environment variables
 const FIGMA_TOKEN = process.env.FIGMA_TOKEN
 const FIGMA_FILE = process.env.FIGMA_FILE
+const PROJECT_DIR = process.env.PROJECT_DIR
 
-if (!FIGMA_TOKEN || !FIGMA_FILE) {
+if (!FIGMA_TOKEN || !FIGMA_FILE || !PROJECT_DIR) {
   console.error(
-    'Missing required environment variables FIGMA_TOKEN or FIGMA_FILE'
+    'Missing required environment variables FIGMA_TOKEN or FIGMA_FILE or PROJECT_DIR'
   )
   process.exit(1)
 }
@@ -57,10 +59,8 @@ const server = new McpServer(
 // Tool to extract components from Figma file
 server.tool(
   'extract-components',
-  {
-    params: z.object({}),
-  },
-  async (_, extra) => {
+  'Extract all components from Figma file and get all graphql queries and mutations',
+  async (extra) => {
     try {
       // Fetch Figma file data
       logger.info('Fetching Figma file data...')
@@ -83,23 +83,115 @@ server.tool(
       const data = await response.json()
       logger.info('Successfully fetched Figma file data')
 
-      await generateComponent(data)
+      // Process the component data
+      const result = await generateComponent(data)
+      logger.info('Component extraction successful')
+
+      // Return the result to the client
       return {
+        // componentsData: result.componentSets, // Pass the structured component data
         content: [
           {
-            type: 'text',
-            text: 'Successfully extracted components',
+            type: 'text' as const,
+            text: result.message,
           },
         ],
       }
     } catch (error: any) {
-      console.error('Error extracting components:', error)
+      logger.error('Error extracting components:', error)
       return {
         isError: true,
         content: [
           {
-            type: 'text',
+            type: 'text' as const,
             text: `Error extracting components: ${error.message}`,
+          },
+        ],
+      }
+    }
+  }
+)
+
+server.tool(
+  'extract-latest-components',
+  'Extract newly added components from Figma file',
+  async (extra) => {
+    try {
+      // Fetch Figma file data
+      logger.info('Fetching Figma file data...')
+
+      // const data = await response.json()
+      const data = await fetchFigmaData()
+      logger.info('Successfully fetched Figma file data')
+
+      // Process the component data
+      const result = await generateComponent(data, true)
+      logger.info('Component extraction successful')
+
+      // Return the result to the client
+      return {
+        // componentsData: result.componentSets, // Pass the structured component data
+        content: [
+          {
+            type: 'text' as const,
+            text: result.message,
+          },
+        ],
+      }
+    } catch (error: any) {
+      logger.error('Error extracting components:', error)
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text' as const,
+            text: `Error extracting components: ${error.message}`,
+          },
+        ],
+      }
+    }
+  }
+)
+
+server.tool(
+  'extract-one-component',
+  'Extract a single component from Figma file',
+  {
+    parameters: z.object({
+      componentName: z.string(),
+    }),
+  },
+  async ({ parameters: { componentName } }, extra) => {
+    try {
+      // Fetch Figma file data
+      logger.info('Fetching Figma file data...')
+
+      // const data = await response.json()
+      const data = await fetchFigmaData()
+      logger.info('Successfully fetched Figma file data')
+
+      // Process the component data
+      const result = await generateComponent(data, true, componentName)
+      logger.info('Component extraction successful')
+
+      // Return the result to the client
+      return {
+        componentsData: result.componentSets, // Pass the structured component data
+        content: [
+          {
+            type: 'text' as const,
+            text: result.message,
+          },
+        ],
+      }
+    } catch (error: any) {
+      logger.error(`Error extracting component ${componentName}:`, error)
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text' as const,
+            text: `Error extracting component ${componentName}: ${error.message}`,
           },
         ],
       }

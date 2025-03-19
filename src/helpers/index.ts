@@ -3,8 +3,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 // Get environment variables
-const FIGMA_TOKEN = process.env.FIGMA_TOKEN
-const FIGMA_FILE = process.env.FIGMA_FILE
+const FIGMA_TOKEN = process.env.FIGMA_TOKEN || ''
+const FIGMA_FILE = process.env.FIGMA_FILE || ''
 
 export function camelCaseToDash(string: string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
@@ -77,7 +77,33 @@ export function toPascalCase(str: string): string {
     .join('')
 }
 
+export const normalizeName = (name: string) =>
+  name.toLowerCase().replace(/[^a-z0-9]/g, '')
+
 export function toCamelCase(str: string): string {
   const pascal = toPascalCase(str)
   return pascal.charAt(0).toLowerCase() + pascal.slice(1)
+}
+
+export async function fetchFigmaData() {
+  const response = await fetch(`https://api.figma.com/v1/files/${FIGMA_FILE}`, {
+    headers: {
+      'X-Figma-Token': FIGMA_TOKEN,
+    },
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    return {
+      isError: true,
+      content: [
+        {
+          type: 'text' as const,
+          text: `Failed to fetch Figma file: ${response.status} ${response.statusText} - ${errorText}`,
+        },
+      ],
+    }
+  }
+
+  return await response.json()
 }
