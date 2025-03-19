@@ -1,0 +1,37 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - figmaToken
+      - figmaFile
+      - projectDir
+    properties:
+      figmaToken:
+        type: string
+        description: Figma API token required to fetch Figma file data
+      figmaFile:
+        type: string
+        description: ID of the Figma file to be analyzed
+      projectDir:
+        type: string
+        description: Directory path for project files where output or assets will be stored
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'node',
+      args: ['build/index.js'],
+      env: {
+        FIGMA_TOKEN: config.figmaToken,
+        FIGMA_FILE: config.figmaFile,
+        PROJECT_DIR: config.projectDir
+      }
+    })
+  exampleConfig:
+    figmaToken: dummy-figma-token
+    figmaFile: dummy-figma-file-id
+    projectDir: /path/to/project
