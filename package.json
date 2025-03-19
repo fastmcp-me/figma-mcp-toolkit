@@ -1,23 +1,35 @@
 {
-  "name": "figma-mcp-server",
+  "name": "@kailashg101/mcp-figma-to-code",
   "version": "1.0.0",
-  "description": "MCP server for Figma API integration",
-  "main": "src/index.ts",
+  "description": "MCP server for converting Figma designs to React Native components",
+  "main": "build/index.js",
   "type": "module",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "mcp",
+    "figma",
+    "react-native",
+    "cursor",
+    "components",
+    "design-to-code"
+  ],
+  "author": "Kailash G",
+  "license": "MIT",
   "bin": {
-    "figmatocode": "./build/index.js"
+    "mcp-figma": "./build/index.js"
   },
   "scripts": {
     "build": "tsc && chmod 755 build/index.js",
     "start": "node build/index.js",
-    "dev": "ts-node-esm src/index.ts"
+    "dev": "ts-node-esm src/index.ts",
+    "prepublishOnly": "npm run build"
   },
   "files": [
-    "build"
+    "build",
+    "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
     "dotenv": "^16.4.5",

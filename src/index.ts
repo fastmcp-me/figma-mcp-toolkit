@@ -1,17 +1,10 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import { object, z } from 'zod'
-import path from 'path'
-import { existsSync, mkdirSync } from 'fs'
-import fsPromises from 'fs/promises'
-import { fileURLToPath } from 'url'
+import { z } from 'zod'
 import { generateComponent } from './helpers/extractComponent.js'
-import { exec } from 'node:child_process'
 import { fetchFigmaData } from './helpers/index.js'
 
 // Load environment variables
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const logger = {
   info: (message: string, meta?: Record<string, any>) => {
@@ -38,10 +31,6 @@ if (!FIGMA_TOKEN || !FIGMA_FILE || !PROJECT_DIR) {
   )
   process.exit(1)
 }
-
-const SVG_OUTPUT_FOLDER = 'assets/svg/'
-const RATE_LIMIT = 20
-const WAIT_TIME_IN_SECONDS = 45
 
 // Create MCP server with explicit capabilities
 const server = new McpServer(
