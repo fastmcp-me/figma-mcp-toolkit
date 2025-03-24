@@ -75,7 +75,6 @@ export async function generateComponent(
 
     const page = componentsPage.children
     let componentSets = []
-    let iconSet = null
     let processedCount = 0
     const checkExisting = (componentName: string) =>
       validation ? !existsSync(`${componentDir}/${componentName}`) : true
@@ -96,9 +95,7 @@ export async function generateComponent(
         const { type, name } = item
         const componentName = toPascalCase(name)
 
-        if (name === 'Icon') {
-          iconSet = item
-        } else if (
+        if (
           type === 'COMPONENT_SET' &&
           checkExisting(componentName) &&
           specificComponent(componentName, componentToExtract)
@@ -125,7 +122,7 @@ export async function generateComponent(
     }
 
     // Create a formatted result for the user
-    const message = `Successfully processed ${processedCount} components.\n\nComponent sets: ${componentSets.length}\nIcon set: ${iconSet ? 'Found' : 'Not found'}\n\nComponent paths:\n${componentSets.map((cs) => `- ${cs.name}`).join('\n')}${iconSet ? '\n- Icon set: Icon' : ''}`
+    const message = `Successfully processed ${processedCount} components.\n\nComponent sets: ${componentSets.length}\nComponent paths:\n${componentSets.map((cs) => `- ${cs.name}`).join('\n')}`
 
     // Return both the result message and the component data
     return {
