@@ -1,13 +1,8 @@
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { normalizeName, toCamelCase, toPascalCase } from './index.js'
-import path, { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// const tempDir = join(__dirname, '../build/temp')
+import { join } from 'node:path'
 
 const PROJECT_DIR = process.env.PROJECT_DIR || '/'
-const tempDir = join(PROJECT_DIR, 'temp')
 const componentDir = join(PROJECT_DIR, 'components')
 interface ComponentChild {
   name: string

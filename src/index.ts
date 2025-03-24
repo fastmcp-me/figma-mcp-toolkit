@@ -188,6 +188,10 @@ server.tool(
   }
 )
 
-// Start the server with stdio transport
-const transport = new StdioServerTransport()
-await server.connect(transport)
+async function runServer() {
+  // Start the server with stdio transport
+  const transport = new StdioServerTransport()
+  await server.connect(transport)
+}
+
+runServer().catch(console.error)

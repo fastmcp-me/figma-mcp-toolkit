@@ -1,6 +1,4 @@
 import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 // Get environment variables
 const FIGMA_TOKEN = process.env.FIGMA_TOKEN || ''
@@ -13,7 +11,6 @@ export function camelCaseToDash(string: string) {
 export async function createFolder(path: string) {
   try {
     await fs.promises.access(path, fs.constants.F_OK)
-    // eslint-disable-next-line no-unused-vars
   } catch (err) {
     await fs.promises.mkdir(path)
   }
